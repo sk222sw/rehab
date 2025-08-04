@@ -1,0 +1,76 @@
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+
+	color: #222;
+	background-color: #ffffff;
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	min-height: 100vh;
+}
+
+#app {
+	max-width: 1280px;
+	text-align: center;
+	flex: 1;
+}
+
+section {
+	margin-top: 5rem;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: 1.5rem;
+}
+
+.exercise-wrapper {
+	margin: 8px 0;
+	display: flex;
+	justify-content: space-between;
+
+	button {
+		height: 100%;
+	}
+}
+
+.exercise-list {
+	display: flex;
+	flex-direction: column;
+}
+
+@media (max-width: 639px) {
+	#app {
+		margin: 2rem;
+	}
+
+	section {
+		margin-top: 5rem;
+		grid-template-columns: 1fr;
+		row-gap: 1rem;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		color: #ccc;
+		background-color: #1a1a1a;
+	}
+
+	.resource {
+		color: #ccc;
+		background-color: #161616;
+	}
+
+	.resource:hover {
+		border: 1px solid #bbb;
+	}
+}
