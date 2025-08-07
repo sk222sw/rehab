@@ -2,18 +2,19 @@ services:
   pocketbase:
     build:
       dockerfile: ops/Dockerfile.Pocketbase
+      context: .
     container_name: rehab-pocketbase
     expose:
       - "8090"
     volumes:
       - ./pocketbase/pb_data:/pb/pb_data
-      - ./pocketbase/pb_migrations:/pb/pb_migrations
     environment:
       - PB_ENCRYPTION_KEY=${PB_ENCRYPTION_KEY:-your-secret-key-here}
 
   frontend:
     build:
       dockerfile: ops/Dockerfile.Frontend
+      context: .
     container_name: rehab-frontend
     expose:
       - "80"
