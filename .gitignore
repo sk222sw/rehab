@@ -54,11 +54,9 @@ dist-ssr/
 .env.test.local
 .env.production.local
 
-# PocketBase specific
-pb_data/
-pb_migrations/
-pocketbase
-pocketbase.exe
+pocketbase/pocketbase
+pocketbase/pb_data
+
 *.db
 *.db-shm
 *.db-wal
