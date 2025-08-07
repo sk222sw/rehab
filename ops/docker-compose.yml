@@ -1,44 +1,23 @@
-version: '3.8'
-
 services:
-  # PocketBase Backend
   pocketbase:
     build:
       context: ..
       dockerfile: ops/Dockerfile.Pocketbase
     container_name: rehab-pocketbase
-    ports:
-      - "8090:8090"
+    expose:
+      - "8090"
     volumes:
-      # Persist PocketBase data
       - ../pocketbase/pb_data:/pb/pb_data
-      # Mount migrations (optional, since they're already copied in Dockerfile)
       - ../pocketbase/pb_migrations:/pb/pb_migrations
     environment:
-      # Optional: Set environment variables for PocketBase
       - PB_ENCRYPTION_KEY=${PB_ENCRYPTION_KEY:-your-secret-key-here}
-    restart: unless-stopped
-    networks:
-      - rehab-network
 
-  # Preact Frontend
   frontend:
     build:
       context: ..
       dockerfile: ops/Dockerfile.Frontend
     container_name: rehab-frontend
-    ports:
-      - "3000:80"
+    expose:
+      - "80"
     depends_on:
       - pocketbase
-    restart: unless-stopped
-    networks:
-      - rehab-network
-
-networks:
-  rehab-network:
-    driver: bridge
-
-volumes:
-  # Optional: Create named volume for PocketBase data
-  pocketbase_data:
