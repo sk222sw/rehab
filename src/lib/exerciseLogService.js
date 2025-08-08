@@ -7,7 +7,6 @@ export async function getExerciseLogByDate(date) {
       `date = "${dateFormatted(date)}"`
     );
 
-
     return record;
   } catch (error) {
     if (error.status === 404) {

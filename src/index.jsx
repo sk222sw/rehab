@@ -10,19 +10,20 @@ import { useState } from 'preact/hooks';
 
 export function App() {
   const { exerciseLog } = useExerciseLog(today())
-  console.log('logg', exerciseLog)
+  console.log('log', exerciseLog)
   const { exercises } = useExercises()
+  console.log('exercises', exercises)
   return (
     <div>
       <h1>Rehab</h1>
       <>
         {todayFormatted()}
       </>
-      <section>
+      {exerciseLog && <section>
         <div class="exercise-list">
           {exercises?.map(e => <Exercise exercise={e} log={exerciseLog} key={e.id} />)}
         </div>
-      </section>
+      </section>}
       <section>
         <ExerciseForm log={exerciseLog} />
       </section>
