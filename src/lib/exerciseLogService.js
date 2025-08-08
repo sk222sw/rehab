@@ -10,7 +10,7 @@ export async function getExerciseLogByDate(date) {
     return record;
   } catch (error) {
     if (error.status === 404) {
-      return null; // No record found for this date
+      throw error;
     }
     console.error('Error fetching exercise log:', error);
     throw error;
@@ -31,7 +31,16 @@ export async function createLogForDate(date) {
 }
 
 export async function createLogForToday() {
-  const existingLog = await getExerciseLogByDate(new Date())
+  let existingLog
+  try {
+    existingLog = await getExerciseLogByDate(new Date())
+  } catch (error) {
+    if (error.status === 404) {
+      existingLog = null
+    } else {
+      throw error
+    }
+  }
 
   if (existingLog != null)
     return

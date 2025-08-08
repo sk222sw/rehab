@@ -5,6 +5,7 @@ export const useExerciseLog = (date) => {
   const [exerciseLog, setExerciseLog] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (!date) return;
@@ -16,6 +17,9 @@ export const useExerciseLog = (date) => {
         const log = await getExerciseLogByDate(new Date(date));
         setExerciseLog(log);
       } catch (err) {
+        if (err?.status === 404) {
+          setNotFound(true)
+        }
         setError(err);
         setExerciseLog(null);
       } finally {
@@ -26,5 +30,5 @@ export const useExerciseLog = (date) => {
     fetchLog();
   }, [date]);
 
-  return { exerciseLog, loading, error };
+  return { exerciseLog, loading, notFound, error };
 };

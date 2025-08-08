@@ -9,30 +9,49 @@ import { createExercise, toggleExercise } from './lib/exerciseService';
 import { useState } from 'preact/hooks';
 
 export function App() {
-  const { exerciseLog } = useExerciseLog(today())
-  console.log('log', exerciseLog)
-  const { exercises } = useExercises()
-  console.log('exercises', exercises)
+  const { exerciseLog, loading: loadingLog, notFound } = useExerciseLog(today())
+  const { exercises, loading: loadingExercies } = useExercises()
+
+  const loading = loadingLog || loadingExercies
+
   return (
     <div>
       <h1>Rehab</h1>
       <>
         {todayFormatted()}
       </>
-      {exerciseLog && <section>
-        <div class="exercise-list">
-          {exercises?.map(e => <Exercise exercise={e} log={exerciseLog} key={e.id} />)}
-        </div>
-      </section>}
-      <section>
-        <ExerciseForm log={exerciseLog} />
-      </section>
+      {notFound && <NoLog />}
+      {loading ? <div>loading</div> : <>
+        {exerciseLog && <section>
+          <div class="exercise-list">
+            {exercises?.map(e => <Exercise exercise={e} log={exerciseLog} key={e.id} />)}
+          </div>
+        </section>}
+        <section>
+          <ExerciseForm log={exerciseLog} />
+        </section>
+      </>}
     </div >
   );
 }
 
+function NoLog() {
+  const onSubmit = e => {
+    e.preventDefault();
+    createLogForToday()
+  };
+
+  return <div>
+    <form onSubmit={onSubmit}>
+      <button>
+        Create log
+      </button>
+    </form>
+  </div>
+}
+
 function Exercise({ exercise, log }) {
-  const isChecked = log?.exercises.find(x => x === exercise.id)
+  const isChecked = log?.exercises?.find(x => x === exercise.id)
   const [checked, setChecked] = useState(isChecked != null)
   const onSubmit = e => {
     e.preventDefault();
