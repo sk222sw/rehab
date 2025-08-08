@@ -15,6 +15,8 @@ services:
     build:
       dockerfile: ops/Dockerfile.Frontend
       context: .
+      args:
+        - VITE_PB_URL=${VITE_PB_URL}
     container_name: rehab-frontend
     expose:
       - "80"
