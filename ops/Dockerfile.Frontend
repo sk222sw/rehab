@@ -1,5 +1,7 @@
 FROM node:18-alpine AS builder
 
+ARG VITE_PB_URL
+
 WORKDIR /app
 
 COPY ../package*.json ./
