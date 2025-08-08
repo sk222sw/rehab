@@ -6,13 +6,9 @@ import { today, todayFormatted } from './lib/dates';
 import { createLogForToday } from './lib/exerciseLogService.js';
 import { useExercises } from './hooks/useExercises';
 import { createExercise, toggleExercise } from './lib/exerciseService';
-import { useState } from 'preact/hooks';
+import { computed, useSignal } from '@preact/signals';
 
 export function App() {
-  const { exerciseLog, loading: loadingLog, notFound } = useExerciseLog(today())
-  const { exercises, loading: loadingExercies } = useExercises()
-
-  const loading = loadingLog || loadingExercies
 
   return (
     <div>
@@ -20,19 +16,35 @@ export function App() {
       <>
         {todayFormatted()}
       </>
-      {notFound && <NoLog />}
-      {loading ? <div>loading</div> : <>
-        {exerciseLog && <section>
-          <div class="exercise-list">
-            {exercises?.map(e => <Exercise exercise={e} log={exerciseLog} key={e.id} />)}
-          </div>
-        </section>}
-        <section>
-          <ExerciseForm log={exerciseLog} />
-        </section>
-      </>}
+      <ExerciseLog />
     </div >
   );
+}
+
+function ExerciseLog() {
+  const { exerciseLog, loading: loadingLog, notFound } = useExerciseLog(today())
+
+  const loading = loadingLog.value
+
+  return <div>
+    {notFound && <NoLog />}
+    {loading ? <div>loading</div> : <>
+      {exerciseLog.value && <section>
+        <ExerciseList log={exerciseLog.value} />
+      </section>}
+      <section>
+        <ExerciseForm log={exerciseLog.value} />
+      </section>
+    </>}
+  </div>
+}
+
+function ExerciseList({ log }) {
+  const { exercises } = useExercises()
+
+  return <div class="exercise-list">
+    {exercises.value?.map(e => <Exercise exercise={e} log={log} key={e.id} />)}
+  </div>
 }
 
 function NoLog() {
@@ -51,22 +63,24 @@ function NoLog() {
 }
 
 function Exercise({ exercise, log }) {
-  const isChecked = log?.exercises?.find(x => x === exercise.id)
-  const [checked, setChecked] = useState(isChecked != null)
+  const isChecked = computed(() => log?.exercises?.find(x => x === exercise.id))
+  const checked = useSignal(isChecked.value != null)
   const onSubmit = e => {
     e.preventDefault();
 
+    console.log("HEJ", exercise)
     toggleExercise(exercise)
 
-    setChecked(x => !x)
+    checked.value = !checked.value
   };
 
   return <div class="exercise-wrapper" key={exercise.id}>
     <p>
       {exercise.name}
     </p>
+    {checked.value}
     <p>
-      {checked ? <span>y</span> : <span></span>}
+      {checked.value ? <span>y</span> : <span></span>}
     </p>
     <form onSubmit={onSubmit}>
       <button >

@@ -1,29 +1,30 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import { getExerciseLogByDate } from '../lib/exerciseLogService.js';
+import { useSignal } from '@preact/signals';
 
 export const useExerciseLog = (date) => {
-  const [exerciseLog, setExerciseLog] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [notFound, setNotFound] = useState(false);
+  const exerciseLog = useSignal(null);
+  const loading = useSignal(false);
+  const error = useSignal(null);
+  const notFound = useSignal(false);
 
   useEffect(() => {
     if (!date) return;
 
     const fetchLog = async () => {
-      setLoading(true);
-      setError(null);
+      loading.value = true;
+      error.value = null;
       try {
         const log = await getExerciseLogByDate(new Date(date));
-        setExerciseLog(log);
+        exerciseLog.value = log;
       } catch (err) {
         if (err?.status === 404) {
-          setNotFound(true)
+          notFound.value = true;
         }
-        setError(err);
-        setExerciseLog(null);
+        error.value = err;
+        exerciseLog.value = null;
       } finally {
-        setLoading(false);
+        loading.value = false;
       }
     };
 

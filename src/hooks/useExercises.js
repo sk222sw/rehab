@@ -1,23 +1,24 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import { getExercises } from '../lib/exerciseService.js';
+import { useSignal } from '@preact/signals';
 
 export const useExercises = () => {
-  const [exercises, setExercises] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const exercises = useSignal(null);
+  const loading = useSignal(false);
+  const error = useSignal(null);
 
   useEffect(() => {
     const fetchLog = async () => {
-      setLoading(true);
-      setError(null);
+      loading.value = true;
+      error.value = null;
       try {
-        const exercises = await getExercises();
-        setExercises(exercises);
+        const exerciseList = await getExercises();
+        exercises.value = exerciseList;
       } catch (err) {
-        setError(err);
-        setExercises(null);
+        error.value = err;
+        exercises.value = null;
       } finally {
-        setLoading(false);
+        loading.value = false;
       }
     };
 
